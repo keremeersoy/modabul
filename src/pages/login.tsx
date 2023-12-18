@@ -48,34 +48,39 @@ const Login = () => {
     const { email, password } = data;
     setLoading(true);
 
-    const response: SignInResponse | undefined = await signIn<"credentials">(
-      "credentials",
-      {
-        email: email,
-        password: password,
-        redirect: false,
-        loading: false,
-      },
-    );
-
-    if (response?.ok === false || null) {
-      toast({
-        title: "Şifre yanlış!",
-        description: "Lütfen tekrar deneyin.",
-        variant: "destructive",
-      });
-      setLoading(false);
-
-      return;
-    } else {
-      toast({
-        title: "Giriş yapıldı!",
-        description: "Hoşgeldiniz.",
-        variant: "success",
-      });
-      setLoading(false);
-
-      return router.push("/app");
+    try{
+      const response: SignInResponse | undefined = await signIn<"credentials">(
+        "credentials",
+        {
+          email: email,
+          password: password,
+          redirect: false,
+          loading: false,
+        },
+      );
+  
+      if (response?.ok === false || null) {
+        toast({
+          title: "Şifre yanlış!",
+          description: "Lütfen tekrar deneyin.",
+          variant: "destructive",
+        });
+        setLoading(false);
+  
+        return;
+      } else {
+        toast({
+          title: "Giriş yapıldı!",
+          description: "Hoşgeldiniz.",
+          variant: "success",
+        });
+        setLoading(false);
+  
+        return router.push("/app");
+      }
+    }
+    catch(err){
+      console.log("error buradan kaynaklaniyor", err)
     }
   };
 
