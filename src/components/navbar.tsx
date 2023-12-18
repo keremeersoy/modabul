@@ -18,7 +18,7 @@ const Navbar = () => {
   const { data: session } = useSession();
 
   return (
-    <div className="bg-background sticky top-0 flex items-center justify-between border-b-2 px-12 py-2 text-center">
+    <div className="sticky top-0 flex items-center justify-between border-b-2 bg-background px-12 py-2 text-center">
       <div className="flex items-center space-x-8">
         <Link
           href="/"
@@ -26,8 +26,8 @@ const Navbar = () => {
         >
           modabul.
         </Link>
-        <Link href="/about">about</Link>
-        <Link href="/pricing">pricing</Link>
+        <Link href="/">keşfet</Link>
+        <Link href="/about">biz kimiz?</Link>
       </div>
       <div className="flex items-center space-x-4">
         <ModeToggle />
@@ -39,23 +39,28 @@ const Navbar = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>{session.user.email}</DropdownMenuLabel>
+
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer">
-                Profile
+                Profil
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">
-                Team
+                Kaydedilenler
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">
-                Subscription
+                İlanlarım
               </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
+                Ayarlar
+              </DropdownMenuItem>
+
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                className="text-destructive cursor-pointer"
+                className="cursor-pointer text-destructive"
                 onClick={() => signOut()}
               >
-                Logout
+                Çıkış Yap
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
