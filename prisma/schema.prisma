@@ -25,6 +25,7 @@ model Account {
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+    @@index([userId])
     @@unique([provider, providerAccountId])
 }
 
@@ -34,6 +35,8 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
 }
 
 model User {
@@ -43,8 +46,15 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
+
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+
+
+    savedAdverts    AdvertSave[]
     accounts      Account[]
     sessions      Session[]
+    adverts       Advert[]
 }
 
 model VerificationToken {
@@ -53,4 +63,76 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+// ilan
+model Advert {
+    id            String   @id @default(cuid())
+    title         String
+    price         String
+    description   String?
+    size          String
+    gender        String
+    color         String
+    isChildCloth  Boolean
+    isFree        Boolean
+    isUsed        Boolean
+    phone         String?
+    savedCount    Int      @default(0)
+    userId        String
+    categoryId    String
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+
+
+    location      AdvertLocation?
+    images        AdvertImage[]
+    advertSaves   AdvertSave[]
+    user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    category      Category @relation(fields: [categoryId], references: [id])
+
+    @@index([userId])
+    @@index([categoryId])
+}
+
+model AdvertImage {
+    id          String   @id @default(cuid())
+    url         String
+
+    advertId    String
+    advert      Advert   @relation(fields: [advertId], references: [id], onDelete: Cascade)
+
+    @@index([advertId])
+}
+
+model AdvertLocation {
+    id          String   @id @default(cuid())
+    city        String
+    detail      String?
+
+    advertId    String
+    advert      Advert   @relation(fields: [advertId], references: [id], onDelete: Cascade)
+
+    @@unique([advertId])
+}
+
+model Category {
+    id          String   @id @default(cuid())
+    name        String
+
+    adverts     Advert[]
+}
+
+model AdvertSave {
+    id          String   @id @default(cuid())
+
+    advertId    String
+    advert      Advert   @relation(fields: [advertId], references: [id], onDelete: Cascade)
+
+    userId      String
+    user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+
+    @@index([userId])
+    @@unique([advertId, userId])
 }
