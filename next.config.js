@@ -19,8 +19,15 @@ const config = {
   },
 
   images: {
-    domains: ["originalfavorites.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: 'originalfavorites.com"',
+        pathname: "**",
+      },
+    ],
   },
+
   headers: async () => {
     return [
       {
