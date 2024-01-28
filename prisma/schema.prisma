@@ -69,7 +69,7 @@ model VerificationToken {
 model Advert {
     id            String   @id @default(cuid())
     title         String
-    price         String
+    price         Int
     description   String?
     size          String
     gender        String
