@@ -5,11 +5,14 @@ import { db } from "@/server/db";
 
 export const advertRouter = createTRPCRouter({
   getLastFiveAdverts: publicProcedure.query(async () => {
+    console.log("get last five adverts STARTED");
     const adverts = await db.advert.findMany({
       take: 4,
       orderBy: { createdAt: "desc" },
       include: { user: true, category: true, images: true, location: true },
     });
+
+    console.log("get last five adverts FINISHED", adverts);
 
     return adverts;
   }),
