@@ -22,7 +22,7 @@ const config = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: 'originalfavorites.com"',
+        hostname: "originalfavorites.com",
         pathname: "**",
       },
     ],
