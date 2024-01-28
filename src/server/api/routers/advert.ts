@@ -4,6 +4,15 @@ import { z } from "zod";
 import { db } from "@/server/db";
 
 export const advertRouter = createTRPCRouter({
+  getLastFiveAdverts: publicProcedure.query(async () => {
+    const adverts = await db.advert.findMany({
+      take: 4,
+      orderBy: { createdAt: "desc" },
+      include: { user: true, category: true, images: true, location: true },
+    });
+
+    return adverts;
+  }),
   createAdvert: protectedProcedure
     .input(
       z.object({
@@ -28,6 +37,8 @@ export const advertRouter = createTRPCRouter({
         data: {
           userId,
           title: input.title,
+          description: input.description,
+          phone: input.phone,
           price: input.price,
           size: input.size,
           gender: input.gender,
