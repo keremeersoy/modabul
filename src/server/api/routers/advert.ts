@@ -5,14 +5,13 @@ import { db } from "@/server/db";
 
 export const advertRouter = createTRPCRouter({
   getLastFiveAdverts: publicProcedure.query(async () => {
-    console.log("get last five adverts STARTED");
     const adverts = await db.advert.findMany({
       take: 8,
       orderBy: { createdAt: "desc" },
       include: { user: true, category: true, images: true, location: true },
     });
 
-    console.log("get last five adverts FINISHED", adverts);
+    // console.log("get last five adverts FINISHED", adverts);
 
     return adverts;
   }),
@@ -49,7 +48,7 @@ export const advertRouter = createTRPCRouter({
           isChildCloth: input.isChildCloth,
           isFree: input.isFree,
           isUsed: input.isUsed,
-          categoryId: "clrxpekrt00002y7nzk5qo42o",
+          categoryId: "clvcfw2pl000711cmwdzw4969",
         },
       });
 
