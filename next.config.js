@@ -25,6 +25,11 @@ const config = {
         hostname: "originalfavorites.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "**",
+      },
     ],
   },
 

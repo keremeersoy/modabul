@@ -30,6 +30,7 @@ export const advertRouter = createTRPCRouter({
         isChildCloth: z.boolean(),
         isFree: z.boolean(),
         isUsed: z.boolean(),
+        imageUrl: z.string().nullable(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -49,6 +50,11 @@ export const advertRouter = createTRPCRouter({
           isFree: input.isFree,
           isUsed: input.isUsed,
           categoryId: "clvcfw2pl000711cmwdzw4969",
+          images: {
+            create: {
+              url: input?.imageUrl ?? "https://via.placeholder.com/200",
+            },
+          },
         },
       });
 

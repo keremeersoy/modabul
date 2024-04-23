@@ -42,6 +42,9 @@ import { Switch } from "@/components/ui/switch";
 import { api } from "@/utils/api";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
+import { CldUploadButton, CldUploadWidget } from "next-cloudinary";
+import { UploadCloudIcon } from "lucide-react";
+import NextImage from "next/image";
 
 const sizes = [
   { label: "XS", value: "xs" },
@@ -81,13 +84,14 @@ const CreateAdvertPage = () => {
       isChildCloth: false,
       isFree: false,
       isUsed: true,
+      imageUrl: null,
     },
   });
 
   const createAdvertMutation = api.advert.createAdvert.useMutation();
 
   const handleCreateAdvert = async (data: CreateAdvertSchema) => {
-    // console.log("data", data);
+    console.log("data", data);
 
     const result = await createAdvertMutation.mutateAsync(data);
 
@@ -143,7 +147,6 @@ const CreateAdvertPage = () => {
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={createForm.control}
                 name="description"
@@ -165,7 +168,54 @@ const CreateAdvertPage = () => {
                   </FormItem>
                 )}
               />
+              {/* image upload will be added here */}
+              <FormField
+                control={createForm.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ürün Fotoğrafı</FormLabel>
 
+                    <FormControl>
+                      <div>
+                        <CldUploadButton
+                          uploadPreset="cjdkz8j1"
+                          onSuccess={(result) => {
+                            if (typeof result.info !== "string") {
+                              createForm.setValue(
+                                "imageUrl",
+                                result.info?.secure_url ?? "",
+                              );
+                            }
+                          }}
+                          options={{
+                            maxFiles: 1,
+                            maxFileSize: 5000000,
+                            multiple: false,
+                            sources: ["local", "camera"],
+                          }}
+                        >
+                          {createForm.getValues("imageUrl") ? (
+                            <NextImage
+                              src={createForm.getValues("imageUrl")!}
+                              alt="uploaded image"
+                              width={350}
+                              height={350}
+                            />
+                          ) : (
+                            <div className="inline-flex h-9 w-full items-center justify-center whitespace-nowrap rounded-md bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-colors hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+                              <UploadCloudIcon className="mr-2 h-4 w-4 shrink-0" />
+                              Yükle
+                            </div>
+                          )}
+                        </CldUploadButton>
+                      </div>
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <div className="space-y-4 md:grid md:grid-cols-3 md:items-end md:space-x-4">
                 <FormField
                   control={createForm.control}
@@ -227,7 +277,6 @@ const CreateAdvertPage = () => {
                   )}
                 />
               </div>
-
               <div className="space-y-4 md:grid md:grid-cols-3 md:items-end md:space-x-4">
                 <FormField
                   control={createForm.control}
@@ -399,7 +448,6 @@ const CreateAdvertPage = () => {
                   )}
                 />
               </div>
-
               <div className="space-y-4 md:grid md:grid-cols-2 md:items-end md:space-x-4">
                 <FormField
                   control={createForm.control}

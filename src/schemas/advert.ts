@@ -11,6 +11,7 @@ export const createAdvertSchema = z.object({
   isChildCloth: z.boolean(),
   isFree: z.boolean(),
   isUsed: z.boolean(),
+  imageUrl: z.string().nullable(),
 });
 
 export type CreateAdvertSchema = z.infer<typeof createAdvertSchema>;
