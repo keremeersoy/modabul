@@ -62,15 +62,22 @@ const AdvertCard = ({
   return (
     <Card>
       <CardHeader className="flex flex-col items-center justify-center">
-        <Image
-          src={images?.[0]?.url ?? NoImage}
-          alt={title}
-          width={200}
-          height={200}
-        />
+        <div
+          className={cn(
+            "flex h-56 w-full items-center justify-center overflow-hidden rounded-md",
+            className,
+          )}
+        >
+          <Image
+            src={images?.[0]?.url ?? NoImage}
+            alt={title}
+            width={200}
+            height={200}
+          />
+        </div>
       </CardHeader>
 
-      <CardContent className="flex flex-col space-y-2">
+      <CardContent className="flex flex-col space-y-4">
         <Label className="text-md font-semibold">
           {title.length > 25 ? title.substring(0, 25) + "..." : title}
         </Label>
