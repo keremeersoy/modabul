@@ -69,7 +69,10 @@ const AdvertCard = ({
           )}
         >
           <Image
-            src={images?.[0]?.url ?? NoImage}
+            src={
+              images?.[0]?.url ??
+              "https://st3.depositphotos.com/17828278/33150/v/450/depositphotos_331503262-stock-illustration-no-image-vector-symbol-missing.jpg"
+            }
             alt={title}
             width={200}
             height={200}

@@ -52,7 +52,9 @@ export const advertRouter = createTRPCRouter({
           categoryId: "clvcfw2pl000711cmwdzw4969",
           images: {
             create: {
-              url: input?.imageUrl ?? "https://via.placeholder.com/200",
+              url:
+                input?.imageUrl ??
+                "https://st3.depositphotos.com/17828278/33150/v/450/depositphotos_331503262-stock-illustration-no-image-vector-symbol-missing.jpg",
             },
           },
         },

@@ -35,6 +35,11 @@ const config = {
         hostname: "via.placeholder.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "st3.depositphotos.com",
+        pathname: "**",
+      },
     ],
   },
 
