@@ -109,7 +109,9 @@ const AdvertCard = ({
           >
             {description && description?.length > 50
               ? description?.substring(0, 50) + "..."
-              : "açıklama yok"}
+              : description}
+
+            {!description && "açıklama yok."}
           </p>
 
           <div className="flex items-center justify-between">
