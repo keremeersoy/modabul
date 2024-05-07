@@ -103,6 +103,57 @@ export const advertRouter = createTRPCRouter({
 
       return advert;
     }),
+  editAdvert: protectedProcedure
+    .input(
+      z.object({
+        advertId: z.string(),
+        title: z.string().min(1, { message: "Title is required" }),
+        description: z
+          .string()
+          .max(500, { message: "Description is too long" }),
+        price: z.coerce.number().positive().min(1),
+        size: z.string().min(1, { message: "Size is required" }),
+        gender: z.string().min(1, { message: "Gender is required" }),
+        phone: z.string().min(1, { message: "Phone is required" }),
+        color: z.string().min(1, { message: "Color is required" }),
+        isChildCloth: z.boolean(),
+        isFree: z.boolean(),
+        isUsed: z.boolean(),
+        imageUrl: z.string().nullable(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.session!.user.id;
+
+      const advert = await db.advert.update({
+        where: {
+          id: input.advertId,
+        },
+        data: {
+          userId,
+          title: input.title,
+          description: input.description,
+          phone: input.phone,
+          price: input.price,
+          size: input.size,
+          gender: input.gender,
+          color: input.color,
+          isChildCloth: input.isChildCloth,
+          isFree: input.isFree,
+          isUsed: input.isUsed,
+          categoryId: "clvcfw2pl000711cmwdzw4969",
+          images: {
+            create: {
+              url:
+                input?.imageUrl ??
+                "https://st3.depositphotos.com/17828278/33150/v/450/depositphotos_331503262-stock-illustration-no-image-vector-symbol-missing.jpg",
+            },
+          },
+        },
+      });
+
+      return advert;
+    }),
   deleteAdvert: protectedProcedure
     .input(
       z.object({
