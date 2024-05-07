@@ -15,6 +15,47 @@ export const advertRouter = createTRPCRouter({
 
     return adverts;
   }),
+  getAdvertById: publicProcedure
+    .input(
+      z.object({
+        advertId: z.string().nullish(),
+      }),
+    )
+    .query(async ({ input }) => {
+      if (!input.advertId) {
+        return null;
+      }
+
+      const advert = await db.advert.findUnique({
+        where: {
+          id: input.advertId,
+        },
+        include: { user: true, category: true, images: true, location: true },
+      });
+
+      return advert;
+    }),
+  getOneUserAdverts: publicProcedure
+    .input(
+      z.object({
+        userId: z.string().nullable(),
+      }),
+    )
+    .query(async ({ input }) => {
+      if (!input.userId) {
+        return null;
+      }
+
+      const adverts = await db.advert.findMany({
+        where: {
+          userId: input.userId,
+        },
+        include: { user: true, category: true, images: true, location: true },
+      });
+
+      return adverts;
+    }),
+
   createAdvert: protectedProcedure
     .input(
       z.object({
@@ -57,6 +98,25 @@ export const advertRouter = createTRPCRouter({
                 "https://st3.depositphotos.com/17828278/33150/v/450/depositphotos_331503262-stock-illustration-no-image-vector-symbol-missing.jpg",
             },
           },
+        },
+      });
+
+      return advert;
+    }),
+  deleteAdvert: protectedProcedure
+    .input(
+      z.object({
+        advertId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (!input.advertId) {
+        return null;
+      }
+
+      const advert = await db.advert.delete({
+        where: {
+          id: input.advertId,
         },
       });
 
