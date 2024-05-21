@@ -13,7 +13,12 @@ const AdvertIdPage = () => {
     advertId: Array.isArray(advertId) ? advertId[0] : advertId,
   });
 
-  if (isLoading)
+  const { data: isAdvertSaved, isLoading: isAdvertSavedLoading } =
+    api.advert.isAdvertSaved.useQuery({
+      advertId: Array.isArray(advertId) ? advertId[0] : advertId,
+    });
+
+  if (isLoading || isAdvertSavedLoading)
     return (
       <MaxWidthWrapperWithoutFlex className="flex items-center justify-center">
         <ReloadIcon className="w-1h-14 h-14 animate-spin" />
@@ -37,7 +42,7 @@ const AdvertIdPage = () => {
 
   return (
     <MaxWidthWrapperWithoutFlex>
-      <AdvertCardFullscreen advert={data} />
+      <AdvertCardFullscreen advert={data} isAdvertSaved={isAdvertSaved} />
     </MaxWidthWrapperWithoutFlex>
   );
 };

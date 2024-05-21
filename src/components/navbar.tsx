@@ -45,9 +45,12 @@ const Navbar = () => {
               <DropdownMenuItem className="cursor-pointer">
                 Profil
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                Kaydedilenler
-              </DropdownMenuItem>
+              <Link href="/app/adverts/saved-adverts">
+                <DropdownMenuItem className="cursor-pointer">
+                  Kaydedilenler
+                </DropdownMenuItem>
+              </Link>
+
               <Link href="/app/adverts/my-adverts">
                 <DropdownMenuItem className="cursor-pointer">
                   İlanlarım

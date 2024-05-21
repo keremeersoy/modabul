@@ -5,11 +5,12 @@ import { Card, CardContent, CardHeader } from "./ui/card";
 import { Label } from "./ui/label";
 import { cn } from "@/lib/utils";
 import { Badge } from "./ui/badge";
-import { Bookmark, Pencil, Trash2 } from "lucide-react";
+import { BookmarkIcon, BookmarkFilledIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Button } from "./ui/button";
 import EditAndDeleteAdvertButtonGroup from "./edit-and-delete-advert-button-group";
+import { api } from "@/utils/api";
 
 interface AdvertDetails extends Advert {
   category: {
@@ -49,6 +50,11 @@ const AdvertCard = ({
   showEditAndDeleteButtons?: boolean;
 }) => {
   const { data: session } = useSession();
+
+  const { data: isAdvertSaved, isLoading: isAdvertSavedLoading } =
+    api.advert.isAdvertSaved.useQuery({
+      advertId: advert.id,
+    });
 
   const {
     id,
@@ -127,7 +133,11 @@ const AdvertCard = ({
 
             <div className="text-md flex items-center justify-center gap-1">
               {savedCount}
-              <Bookmark className="h-5 w-5" />
+              {isAdvertSaved ? (
+                <BookmarkFilledIcon className="h-6 w-6" />
+              ) : (
+                <BookmarkIcon className="h-6 w-6" />
+              )}
             </div>
           </div>
 

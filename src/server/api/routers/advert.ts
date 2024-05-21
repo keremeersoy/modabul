@@ -173,4 +173,118 @@ export const advertRouter = createTRPCRouter({
 
       return advert;
     }),
+  getSavedAdverts: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session!.user.id;
+
+    const savedAdverts = await db.advertSave.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    const adverts = await db.advert.findMany({
+      where: {
+        id: {
+          in: savedAdverts.map((savedAdvert) => savedAdvert.advertId),
+        },
+      },
+      include: { user: true, category: true, images: true, location: true },
+    });
+
+    return adverts;
+  }),
+
+  saveAdvert: protectedProcedure
+    .input(
+      z.object({
+        advertId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.session!.user.id;
+
+      const savedAdvert = await db.advertSave.create({
+        data: {
+          userId,
+          advertId: input.advertId,
+        },
+      });
+
+      await db.advert.update({
+        where: {
+          id: input.advertId,
+        },
+        data: {
+          savedCount: {
+            increment: 1,
+          },
+        },
+      });
+
+      return savedAdvert;
+    }),
+  unsaveAdvert: protectedProcedure
+    .input(
+      z.object({
+        advertId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.session!.user.id;
+
+      const savedAdvert = await db.advertSave.findUnique({
+        where: {
+          advertId_userId: {
+            advertId: input.advertId,
+            userId: userId,
+          },
+        },
+      });
+
+      if (savedAdvert) {
+        await db.advertSave.delete({
+          where: {
+            advertId_userId: {
+              advertId: input.advertId,
+              userId: userId,
+            },
+          },
+        });
+
+        await db.advert.update({
+          where: {
+            id: input.advertId,
+          },
+          data: {
+            savedCount: {
+              decrement: 1,
+            },
+          },
+        });
+      }
+
+      return savedAdvert;
+    }),
+  isAdvertSaved: protectedProcedure
+    .input(
+      z.object({
+        advertId: z.string().nullish(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      if (!input.advertId) return false;
+
+      const userId = ctx.session!.user.id;
+
+      const savedAdvert = await db.advertSave.findFirst({
+        where: {
+          userId,
+          advertId: input.advertId,
+        },
+      });
+
+      if (savedAdvert) return true;
+
+      return false;
+    }),
 });

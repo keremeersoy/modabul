@@ -1,14 +1,16 @@
 import { Advert } from "@prisma/client";
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Badge } from "./ui/badge";
 import { Label } from "./ui/label";
-import { Bookmark } from "lucide-react";
+import { BookmarkIcon, BookmarkFilledIcon } from "@radix-ui/react-icons";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useSession } from "next-auth/react";
 import EditAndDeleteAdvertButtonGroup from "./edit-and-delete-advert-button-group";
+import { Button } from "./ui/button";
+import { api } from "@/utils/api";
 
 interface AdvertDetails extends Advert {
   category: {
@@ -41,12 +43,12 @@ interface AdvertDetails extends Advert {
 const AdvertCardFullscreen = ({
   advert,
   className,
+  isAdvertSaved: initialIsAdvertSaved,
 }: {
   advert: AdvertDetails;
   className?: string;
+  isAdvertSaved?: boolean;
 }) => {
-  const { data: session } = useSession();
-
   const {
     id,
     title,
@@ -67,7 +69,27 @@ const AdvertCardFullscreen = ({
     phone,
   } = advert;
 
+  const { data: session } = useSession();
+  const [isAdvertSaved, setIsAdvertSaved] = useState(initialIsAdvertSaved);
+
   const isOwner = session?.user.id === user.id;
+
+  const saveAdvertMutation = api.advert.saveAdvert.useMutation();
+  const unsaveAdvertMutation = api.advert.unsaveAdvert.useMutation();
+
+  const handleSaveAdvert = async () => {
+    await saveAdvertMutation.mutateAsync({ advertId: id });
+
+    setIsAdvertSaved(true);
+    advert.savedCount++;
+  };
+
+  const handleUnsaveAdvert = async () => {
+    await unsaveAdvertMutation.mutateAsync({ advertId: id });
+
+    setIsAdvertSaved(false);
+    advert.savedCount--;
+  };
 
   return (
     <div>
@@ -83,12 +105,12 @@ const AdvertCardFullscreen = ({
                   year: "numeric",
                 })}
               </p>
-              {isOwner && (
+              {/* {isOwner && (
                 <EditAndDeleteAdvertButtonGroup
                   advertId={id}
                   isOwner={isOwner}
                 />
-              )}
+              )} */}
             </div>
           </div>
         </CardHeader>
@@ -147,7 +169,23 @@ const AdvertCardFullscreen = ({
 
               <div className="flex items-center justify-center gap-1 text-xl">
                 {savedCount}
-                <Bookmark className="h-6 w-6" />
+                {isAdvertSaved ? (
+                  <Button
+                    size={"icon"}
+                    variant={"ghost"}
+                    onClick={handleUnsaveAdvert}
+                  >
+                    <BookmarkFilledIcon className="h-6 w-6" />
+                  </Button>
+                ) : (
+                  <Button
+                    size={"icon"}
+                    variant={"ghost"}
+                    onClick={handleSaveAdvert}
+                  >
+                    <BookmarkIcon className="h-6 w-6" />
+                  </Button>
+                )}
               </div>
             </div>
 
