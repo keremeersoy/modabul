@@ -42,9 +42,11 @@ interface AdvertDetails extends Advert {
 const AdvertCard = ({
   advert,
   className,
+  showEditAndDeleteButtons = false,
 }: {
   advert: AdvertDetails;
   className?: string;
+  showEditAndDeleteButtons?: boolean;
 }) => {
   const { data: session } = useSession();
 
@@ -70,7 +72,7 @@ const AdvertCard = ({
 
   return (
     <Card className="h-full">
-      {isOwner && (
+      {isOwner && showEditAndDeleteButtons && (
         <EditAndDeleteAdvertButtonGroup
           advertId={id}
           isOwner={isOwner}
