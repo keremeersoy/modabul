@@ -1,4 +1,5 @@
 import AdvertCardFullscreen from "@/components/advert-card-fullscreen";
+import AdvertQuestionsArea from "@/components/advert-questions-area";
 import MaxWidthWrapperWithoutFlex from "@/components/max-width-wrapper-without-flex";
 import { api } from "@/utils/api";
 import { ReloadIcon } from "@radix-ui/react-icons";
@@ -33,7 +34,7 @@ const AdvertIdPage = () => {
       </div>
     );
 
-  if (!data)
+  if (!data || !advertId)
     return (
       <MaxWidthWrapperWithoutFlex className="flex items-center justify-center">
         <p>İlan bulunamadı.</p>
@@ -43,6 +44,7 @@ const AdvertIdPage = () => {
   return (
     <MaxWidthWrapperWithoutFlex>
       <AdvertCardFullscreen advert={data} isAdvertSaved={isAdvertSaved} />
+      <AdvertQuestionsArea advertOwnerId={data.userId} advertId={advertId} />
     </MaxWidthWrapperWithoutFlex>
   );
 };

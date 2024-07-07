@@ -14,4 +14,14 @@ export const createAdvertSchema = z.object({
   imageUrl: z.string().nullable(),
 });
 
+export const createQuestionSchema = z.object({
+  content: z.string().min(1, { message: "Content is required" }),
+});
+
+export const createAnswerSchema = z.object({
+  content: z.string().min(1, { message: "Content is required" }),
+});
+
 export type CreateAdvertSchema = z.infer<typeof createAdvertSchema>;
+export type CreateQuestionSchema = z.infer<typeof createQuestionSchema>;
+export type CreateAnswerSchema = z.infer<typeof createAnswerSchema>;

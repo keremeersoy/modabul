@@ -55,6 +55,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     adverts       Advert[]
+    questions     AdvertQuestion[]
 }
 
 model VerificationToken {
@@ -90,6 +91,7 @@ model Advert {
     advertSaves   AdvertSave[]
     user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     category      Category @relation(fields: [categoryId], references: [id])
+    questions     AdvertQuestion[]
 
     @@index([userId])
     @@index([categoryId])
@@ -135,4 +137,30 @@ model AdvertSave {
 
     @@index([userId])
     @@unique([advertId, userId])
+}
+
+model AdvertQuestion {
+    id          String   @id @default(cuid())
+    content     String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    advertId    String
+    advert      Advert   @relation(fields: [advertId], references: [id], onDelete: Cascade)
+    userId      String
+    user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    answer      AdvertQuestionAnswer?
+
+    @@index([advertId])
+    @@index([userId])
+}
+
+model AdvertQuestionAnswer {
+    id          String   @id @default(cuid())
+    content     String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    questionId  String @unique
+    question    AdvertQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }

@@ -287,4 +287,66 @@ export const advertRouter = createTRPCRouter({
 
       return false;
     }),
+
+  createAdvertQuestion: protectedProcedure
+    .input(
+      z.object({
+        advertId: z.string(),
+        content: z.string().min(1, { message: "Content is required" }),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.session!.user.id;
+
+      const question = await db.advertQuestion.create({
+        data: {
+          userId,
+          advertId: input.advertId,
+          content: input.content,
+        },
+      });
+
+      return question;
+    }),
+
+  getAdvertQuestionsAndAnswers: protectedProcedure
+    .input(
+      z.object({
+        advertId: z.string(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const questions = await db.advertQuestion.findMany({
+        where: {
+          advertId: input.advertId,
+        },
+        include: {
+          user: true,
+          answer: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      return questions;
+    }),
+
+  createAdvertAnswer: protectedProcedure
+    .input(
+      z.object({
+        questionId: z.string(),
+        content: z.string().min(1, { message: "Content is required" }),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const answer = await db.advertQuestionAnswer.create({
+        data: {
+          questionId: input.questionId,
+          content: input.content,
+        },
+      });
+
+      return answer;
+    }),
 });
